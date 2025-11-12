@@ -1,11 +1,7 @@
-import { Navigate } from 'react-router-dom'
-import {Outlet} from "react-router-dom"
-import { Login } from '../pages/Login'
-import { Home } from '../pages/Home'
-export const PublicRoute = () => {
-    const isLogged  = localStorage.getItem("isLogged")
-    console.log(isLogged);
-  return (
-    !isLogged ? <Outlet/> : <Navigate to={"/home"}/>
-  )
-}
+import { Navigate, Outlet } from "react-router-dom";
+import { useProfile } from "../hooks/useProfile";
+export const PublicRoute =  () => {
+  const { getProfile } =  useProfile({});
+  const isLogged =  getProfile();
+  return (isLogged === false) ? <Navigate to={"/home"} /> : <Outlet />;
+};

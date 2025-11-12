@@ -3,14 +3,13 @@ import { useState } from "react";
 export const useForm = (initialValue = {}) =>{
     const [values, setValues] = useState(initialValue);
 
-
-    const handleChange = (e) =>{(prevValue) =>{
+    const handleChange = (e) =>{
         const {name, value} = e.target
         setValues({
-            ...prevValue,
+            ...values,
             [name]: value
-        })
-    }}
+        });
+    }
     const handleReset = () =>{
         setValues(initialValue);
     }
@@ -21,4 +20,4 @@ export const useForm = (initialValue = {}) =>{
         handleChange,
         handleReset
     }
-}
+};
