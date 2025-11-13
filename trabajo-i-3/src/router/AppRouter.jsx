@@ -7,6 +7,8 @@ import { Navigate } from "react-router-dom";
 import { Profile } from "../pages/Profile";
 import { Tasks } from "../pages/Tasks";
 import { Register } from "../pages/Register";
+import { Navbar } from "../components/Navbar";
+
 export const AppRouter = () => {
   return (
     <Routes>

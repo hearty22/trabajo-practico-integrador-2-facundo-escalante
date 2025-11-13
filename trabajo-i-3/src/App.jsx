@@ -1,6 +1,10 @@
-import { AppRouter } from './router/AppRouter';
+import { AppRouter } from "./router/AppRouter";
+import { Navbar } from "./components/Navbar";
 export const App = () => {
   return (
-      <AppRouter/>
-  )
-}
+    <>
+      <Navbar />
+      <AppRouter />
+    </>
+  );
+};
