@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const useForm = (initialValue = {}) => {
+  const navigate = useNavigate();
   const [values, setValues] = useState(initialValue);
 
   const handleChange = (e) => {
@@ -18,9 +20,11 @@ export const useForm = (initialValue = {}) => {
       method: "POST",
       headers: {
         headers: { "Content-Type": "application/json" },
-      }
+      },
+      credentials: "include",
     });
     const data = await res.json();
+    navigate("/login")
     return data;
   };
 

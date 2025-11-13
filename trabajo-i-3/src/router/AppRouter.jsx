@@ -15,18 +15,16 @@ export const AppRouter = () => {
     <>
     <Navbar/>
     <Routes>
-      <Route element={<PublicRoute />}>
-        <Route path="/login" element={<Login/>} />
-        <Route path="/register" element={<Register/>} />
-        <Route path="*" element={<Navigate to={"/login"}/>} />
-        <Route path="/" element={<Navigate to={"/login"}/>} />
-      </Route>
       <Route element={<PrivateRoute />}>
         <Route path="/home" element={<Home/>} />
         <Route path="/tasks" element={<Tasks/>} />
         <Route path="/profile" element={<Profile/>} />
-        <Route path="*" element={<Home/>} />
-        <Route path="/" element={<Home/>} />
+        <Route path="*" element={<Navigate to={"/home"}/>} />
+      </Route>
+      <Route element={<PublicRoute />}>
+        <Route path="/login" element={<Login/>} />
+        <Route path="/register" element={<Register/>} />
+        <Route path="*" element={<Navigate to={"/login"}/>} />
       </Route>
     </Routes>
     <Footer/>

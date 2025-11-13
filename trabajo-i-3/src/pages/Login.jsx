@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { useForm } from "../hooks/useForm";
 import { Loading } from "../components/Loading";
+import { useNavigate } from "react-router-dom";
 export const Login = () => {
+  const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [isloading, setLoading] = useState(false);
   const { values, handleChange, handleReset } = useForm({
     username: "",
     password: "",
   });
+  
   const Submit = async (e) => {
     e.preventDefault();
     setLoading(true)
@@ -16,18 +19,25 @@ export const Login = () => {
         username: values.username,
         password: values.password,
       };
-      const response = await fetch("http://localhost:3000/api/login", {
+      const res = await fetch("http://localhost:3000/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(bodyfetch),
       });
-      const res = await response.json();
-      console.log(res);
+      // console.log(res);
       if (!res.ok) {
+        setLoading(false)
         setMessage(res.errors);
+        return
       }
-      setLoading(false)
-      handleReset();
+      console.log("hola");
+      if (res.ok){
+        setLoading(false)
+        setMessage("login exitoso")
+        handleReset();
+        navigate("/home")
+      }
     } catch (error) {
       setLoading(false)
       setMessage("error de conexion")

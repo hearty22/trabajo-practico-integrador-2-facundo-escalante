@@ -5,7 +5,8 @@ export const useProfile = (initialValue) => {
   const getProfile = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/profile",{
-        method: "GET"
+        method: "GET",
+        credentials: "include"
       });
       const data = await response.json();
       console.log(data);
@@ -15,8 +16,8 @@ export const useProfile = (initialValue) => {
       return data;
     }
   };
+  
   return {
-
     profile,
     setProfile,
     getProfile,
