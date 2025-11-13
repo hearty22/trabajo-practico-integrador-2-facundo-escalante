@@ -10,6 +10,7 @@ export const Login = () => {
     username: "",
     password: "",
   });
+
   
   const Submit = async (e) => {
     e.preventDefault();
@@ -28,10 +29,9 @@ export const Login = () => {
       // console.log(res);
       if (!res.ok) {
         setLoading(false)
-        setMessage(res.errors);
+        setMessage("credenciales invalidas");
         return
       }
-      console.log("hola");
       if (res.ok){
         setLoading(false)
         setMessage("login exitoso")
@@ -39,9 +39,9 @@ export const Login = () => {
         navigate("/home")
       }
     } catch (error) {
+      console.log(error);
       setLoading(false)
       setMessage("error de conexion")
-      console.log("error en el fetch: ", error);
     }
   };
 

@@ -2,16 +2,24 @@ import { useState } from "react";
 import { useForm } from "../hooks/useForm";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
-import { useProfile } from "../hooks/useProfile";
 export const Navbar = () => {
-  const {getProfile} = useProfile();
   const { Logout } = useForm();
   const [isLogged, setIsLogged] = useState(false);
   useEffect(() => {
     const checkProfile = async () => {
       try {
-        const profile = await getProfile();
-        setIsLogged(!!profile); //convierte el valor de islogged al valor del perfil, si el fetch da error o es incorrecto tomará falso, y diceversa
+        const profile = await fetch("http://localhost:3000/api/profile", {
+          method: "GET",
+          credentials: "include",
+        });
+        if(!profile.ok){
+          setIsLogged(false)
+          return
+        }
+        if(profile.ok){
+          setIsLogged(true)
+          return
+        }
       } catch (error) {
         console.log(error);
         setIsLogged(false);
@@ -33,66 +41,67 @@ export const Navbar = () => {
           </Link>
 
           {/* Mobile menu button */}
-          {<div className="block lg:hidden">
-            <button className="navbar-toggler text-white hover:text-blue-200 p-2 rounded-md transition-colors duration-200">
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                ></path>
-              </svg>
-            </button>
-          </div>}
+          {
+            <div className="block lg:hidden">
+              <button className="navbar-toggler text-white hover:text-blue-200 p-2 rounded-md transition-colors duration-200">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          }
 
           {/* Navigation Menu */}
-        
-          
-          {(isLogged) && (<div className="hidden lg:flex items-center space-x-4">
-            <ul className="flex items-center space-x-4">
-              <li>
-                <Link
-                  className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-white/10"
-                  to="/tasks"
-                >
-                  Tasks
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-white/10"
-                  to="/home"
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-white/10"
-                  to="/profile"
-                >
-                  Profile
-                </Link>
-              </li>
-              <li>
-                <button
-                  onClick={Logout}
-                  className="bg-white text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md"
-                >
-                  Logout
-                </button>
-              </li>
-            </ul>
-          </div>)}
 
-
+          {isLogged && (
+            <div className="hidden lg:flex items-center space-x-4">
+              <ul className="flex items-center space-x-4">
+                <li>
+                  <Link
+                    className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-white/10"
+                    to="/tasks"
+                  >
+                    Tasks
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-white/10"
+                    to="/home"
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-white/10"
+                    to="/profile"
+                  >
+                    Profile
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    onClick={Logout}
+                    className="bg-white text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 shadow-sm hover:shadow-md"
+                  >
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Mobile Menu (hidden by default) */}
