@@ -11,45 +11,64 @@ export const Register = () => {
     firstname: "",
     dni: "",
   });
-  const [message, setMessage] = useState("");
-
+  const [message, setMessage] = useState();
+  const [messageOk, setMessageOk] = useState();
+  const { username, email, password, lastname, firstname } = values;
   const submit = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    //validaciones:
+    if (!username || !email || !password || !lastname || !firstname) {
+      setMessage("campos obligatorios no rellenados");
+      return;
+    }
+    if (password.length < 6) {
+      setMessage("el campo password debe de tener mas de 6 caracteres");
+      return;
+    }
+    setLoading(true);
+    console.log({
+      username: username,
+      email: email,
+      password: password,
+      lastname: lastname,
+      name: firstname,
+    });
     try {
-      const fetchBody = {
-        username: values.username,
-        email: values.email,
-        password: values.password,
-        lastname: values.lastname,
-        name: values.firstname,
-      };
       const fetcData = await fetch("http://localhost:3000/api/register", {
         method: "POST",
         headers: {
-          headers: { "Content-Type": "application/json" },
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(fetchBody),
+        body: JSON.stringify({
+          username: username,
+          email: email,
+          password: password,
+          lastname: lastname,
+          name: firstname,
+        }),
       });
       const response = await fetcData.json();
-      setLoading(false)
-      if (!response.ok) {
-        console.log(response.errors);
+      console.log(response.message);
+      setLoading(false);
+      if (!response.message == "Usuario registrado exitosamente") {
         setMessage("campos invalidos");
+        return;
       }
-      if (response.ok){
-        setMessage(response.message, " inicie sesion")
+      if (response.message == "Usuario registrado exitosamente") {
+        setMessageOk(`usario registrado exitosamente, inicie sesion`);
+        handleReset();
+        return;
       }
-      handleReset();
     } catch (error) {
-      setLoading(false)
-      setMessage("error de conexion")
+      // se...response.errors
+      setMessage("error de conexion");
       console.log(error);
     }
   };
 
-  return (
-    ( isloading ? <Loading/> : (
+  return isloading ? (
+    <Loading />
+  ) : (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <form
         id="form-login"
@@ -144,9 +163,13 @@ export const Register = () => {
           />
         </div>
 
-        <span className="text-red-500 text-sm mt-2 block">{message}</span>
-        <button onClick={submit}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outlinea_none focus:shadow-outline w-full">
+        <h1 className="text-red-500 text-sm mt-2 block">{message}</h1>
+        <h1 className="text-green-500 text-sm mt-2 block">{messageOk}</h1>
+
+        <button
+          onClick={submit}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outlinea_none focus:shadow-outline w-full"
+        >
           Login
         </button>
         <br />
@@ -155,6 +178,6 @@ export const Register = () => {
           <a href="/login"> Inicia sesion</a>
         </p>
       </form>
-    </div>))
+    </div>
   );
 };

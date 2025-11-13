@@ -24,7 +24,7 @@ export const Login = () => {
       const res = await response.json();
       console.log(res);
       if (!res.ok) {
-        setMessage(res.message);
+        setMessage(res.errors);
       }
       setLoading(false)
       handleReset();

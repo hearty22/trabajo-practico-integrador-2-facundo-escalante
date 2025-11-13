@@ -23,6 +23,7 @@ export const PublicRoute = () => {
     console.log(isLogged);
     checkProfile();
   }, []); 
+
   return isLoading ? (
     <Loading />
   ) : isLogged === false ? (
