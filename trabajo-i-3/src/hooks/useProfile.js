@@ -16,6 +16,7 @@ export const useProfile = (initialValue) => {
     }
   };
   return {
+
     profile,
     setProfile,
     getProfile,

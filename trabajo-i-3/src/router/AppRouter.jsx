@@ -8,9 +8,12 @@ import { Profile } from "../pages/Profile";
 import { Tasks } from "../pages/Tasks";
 import { Register } from "../pages/Register";
 import { Navbar } from "../components/Navbar";
+import { Footer } from "../components/Footer";
 
 export const AppRouter = () => {
   return (
+    <>
+    <Navbar/>
     <Routes>
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<Login/>} />
@@ -26,5 +29,7 @@ export const AppRouter = () => {
         <Route path="/" element={<Home/>} />
       </Route>
     </Routes>
+    <Footer/>
+    </>
   );
 };
