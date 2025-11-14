@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 export const useForm = (initialValue = {}) => {
   const navigate = useNavigate();
-  const [values, setValues] = useState(initialValue);
+  const [values, setValues, checked, type] = useState(initialValue);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setValues({
       ...values,
-      [name]: value,
+      [name]: type === "checkbox" ?  checked : value
     });
   };
   const handleReset = () => {

@@ -105,28 +105,27 @@ export const Tasks = () => {
       idTask: idTask,
     });
   };
-  const putTask = async (idTask ,{e}) =>{
+  const putTask = async (idTask, { e }) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:3000/api/tasks/${idTask}`,
-        {
-          method: "PUT",
-          credentials: "include",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({
-            title: values.title,
-            description: values.description
-          })
-        }
-      );
-      if(res.ok){
-        setMessage("tarea actualizada con exito")
+      const res = await fetch(`http://localhost:3000/api/tasks/${idTask}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: values.title,
+          description: values.description,
+          is_completed: values.is_completed
+        }),
+      });
+      if (res.ok) {
+        setMessage("tarea actualizada con exito");
         handleReset();
         setTimeout(() => {
           window.location.reload();
         }, 2000);
-      }else{
-        setMessageError("error al actualizar la tarea")
+      } else {
+        setMessageError("error al actualizar la tarea");
         handleReset();
         setTimeout(() => {
           window.location.reload();
@@ -134,9 +133,37 @@ export const Tasks = () => {
       }
     } catch (error) {
       console.log(error);
-      setMessageError("error de conexion")
+      setMessageError("error de conexion");
     }
-  }
+  };
+  const markCompleted = async (idTask, newIsCompletedStatus) => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/tasks/${idTask}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          is_completed: newIsCompletedStatus, // Enviar el nuevo estado directamente
+        }),
+      });
+      const responseData = await res.json(); // Esperar la resolución del JSON
+      console.log(responseData);
+
+      if (res.ok) {
+        setMessage("Tarea actualizada como completada/incompleta.");
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === idTask ? { ...task, is_completed: newIsCompletedStatus } : task
+          )
+        );
+      } else {
+        setMessageError("Error al actualizar la tarea.");
+      }
+    } catch (error) {
+      setMessageError("Error de conexión: " + error.message);
+      console.error(error);
+    }
+  };
 
   if (isloading) {
     return <Loading />;
@@ -168,6 +195,36 @@ export const Tasks = () => {
                 key={task.id}
                 className="bg-gray-50 p-4 rounded-md shadow-sm mb-4 flex justify-between items-center"
               >
+                <label className="inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="is_completed"
+                    id="is_completed"
+                    checked={
+                      task.is_completed
+                    }
+                    onChange={(e) => {
+                      markCompleted(task.id, e.target.checked); // Pasar el nuevo estado del checkbox
+                    }}
+                    className="peer hidden"
+                  />
+                  <div className="h-6 w-6 rounded-full border-2 border-gray-300 bg-white peer-checked:border-blue-500 peer-checked:bg-blue-500 transition-all duration-200 ease-in-out flex items-center justify-center">
+                    <svg
+                      className="w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="3"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                  <span className="ml-2 text-gray-700">Completed</span>
+                </label>
                 <div>
                   <h2 className="text-lg font-semibold text-gray-800">
                     {task.title}
@@ -279,7 +336,7 @@ export const Tasks = () => {
           </form>
         </div>
       )}
-    {/* seccion para editar la tarea */}
+      {/* seccion para editar la tarea */}
       {editingTask.active && (
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
           <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
@@ -333,7 +390,7 @@ export const Tasks = () => {
               <div className="flex space-x-4">
                 <button
                   type="submit"
-                  onClick={()=>{
+                  onClick={() => {
                     putTask(editingTask.idTask);
                   }}
                   className="flex-1 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -345,8 +402,8 @@ export const Tasks = () => {
                   onClick={() => {
                     setEditingTask({
                       idTask: "",
-                      active: false
-                    })
+                      active: false,
+                    });
                     window.location.reload(true);
                   }}
                   className="flex-1 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
