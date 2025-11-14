@@ -16,7 +16,7 @@ export const Tasks = () => {
   const [createTask, setCreateTask] = useState(false);
   const [editingTask, setEditingTask] = useState({
     idTask: "",
-    active: "",
+    active: false,
   });
   useEffect(() => {
     const fetchData = async () => {
@@ -59,16 +59,13 @@ export const Tasks = () => {
       });
       console.log(response);
       if (response.ok) {
-        setIsLoading(false);
         setMessage("Tarea creada exitosamente");
         handleReset();
       } else {
-        setIsLoading(false);
         setMessageError("Error en crear la tarea");
         handleReset();
       }
     } catch (error) {
-      setIsLoading(false);
       console.log(error);
     } finally {
       setIsLoading(false);
@@ -150,7 +147,7 @@ export const Tasks = () => {
       console.log(responseData);
 
       if (res.ok) {
-        setMessage("Tarea actualizada como completada/incompleta.");
+        // setMessage("Tarea actualizada como completada/incompleta.");
         setTasks((prevTasks) =>
           prevTasks.map((task) =>
             task.id === idTask ? { ...task, is_completed: newIsCompletedStatus } : task
