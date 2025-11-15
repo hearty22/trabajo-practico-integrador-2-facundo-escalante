@@ -3,7 +3,12 @@ import { useProfile } from "../hooks/useProfile";
 
 export const Home = () => {
   const { profile, setProfile, getProfile } = useProfile("");
-  const [tasks, setTasks] = useState([])
+  const [tasks, setTasks] = useState([]);
+  const [stats, setStats] = useState({
+    total: "",
+    completed: "",
+    incompleted: "",
+  });
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -17,18 +22,29 @@ export const Home = () => {
     };
     fetchData();
   }, []);
-  useEffect(()=>{
-    const getTasks = async () =>{
+  useEffect(() => {
+    const getTasks = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/tasks-by-user",{
+        const res = await fetch("http://localhost:3000/api/tasks-by-user", {
           method: "GET",
-          credentials: "include"
+          credentials: "include",
         });
         const dataTasks = await res.json();
-        if(res.ok){
+        if (res.ok) {
           console.log("mensaje de exito");
-          setTasks(dataTasks)
-        } else{
+          setTasks(dataTasks);
+          const totalTasks = dataTasks.length;
+          const completedTasks = dataTasks.filter(
+            (task) => task.is_completed
+          ).length;
+          const incompletedTasks = totalTasks - completedTasks;
+
+          setStats({
+            total: totalTasks,
+            completed: completedTasks,
+            incompleted: incompletedTasks
+          })
+        } else {
           console.log("mensaje de fracaso");
         }
       } catch (error) {
@@ -36,13 +52,18 @@ export const Home = () => {
       }
     };
     getTasks();
-  },[])
-  
+  }, []);
+  console.log(tasks);
 
   return (
     <>
       <div>
-        <h1>Bienvenido {JSON.stringify(profile)}</h1>
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-black mb-4">
+          Bienvenido{" "}
+          <span className="text-blue-600 dark:text-blue-400">
+            {JSON.stringify(profile)}
+          </span>
+        </h1>{" "}
         <div class="bg-gray-100 min-h-screen p-8">
           <h2 class="text-2xl font-semibold text-gray-800 mb-6">
             Resumen Estadístico
@@ -51,23 +72,23 @@ export const Home = () => {
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white p-6 rounded-lg shadow-lg">
               <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">
-                Total de Tareas
+                Total de Tareas |
               </h3>
-              <p class="mt-2 text-4xl font-bold text-gray-900"></p>
+              <p class="mt-2 text-4xl font-bold text-gray-900">{stats.total}</p>
             </div>
 
             <div class="bg-white p-6 rounded-lg shadow-lg">
               <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">
                 Tareas Completadas
               </h3>
-              <p class="mt-2 text-4xl font-bold text-green-600"></p>
+              <p class="mt-2 text-4xl font-bold text-green-600">{stats.completed}</p>
             </div>
 
             <div class="bg-white p-6 rounded-lg shadow-lg">
               <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">
                 Tareas Pendientes
               </h3>
-              <p class="mt-2 text-4xl font-bold text-amber-600"></p>
+              <p class="mt-2 text-4xl font-bold text-amber-600">{stats.incompleted}</p>
             </div>
           </div>
         </div>
